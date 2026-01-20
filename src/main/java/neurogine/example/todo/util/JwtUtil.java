@@ -16,6 +16,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
+	// externalize secret and expiration for flexibility
 	@Value("${jwt.secret:changeit_changeit_changeit_changeit}")
 	private String jwtSecret;
 
@@ -53,6 +54,7 @@ public class JwtUtil {
 	 */
 	public String getSubjectFromToken(String token) {
 		SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+		// parsed and verified using the secret key, ensuring the signature is valid and the token has not been tampered with
 		Claims claims = Jwts.parser()
 				.verifyWith(key)
 				.build()
@@ -61,6 +63,8 @@ public class JwtUtil {
 		return claims.getSubject();
 	}
 
+	// Check if token is expired by comparing expiration date with current date
+	// Expired tokens are rejected to prevent replay attacks
 	private boolean isTokenExpired(String token) {
 		try {
 			SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));

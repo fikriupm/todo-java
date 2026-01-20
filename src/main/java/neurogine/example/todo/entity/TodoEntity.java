@@ -50,6 +50,7 @@ public class TodoEntity {
   @Builder.Default  
   private TodoStatus status = TodoStatus.NEW;
 
+  // FetchType.LAZY to avoid loading user unless needed
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)
   private UserEntity user;
